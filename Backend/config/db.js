@@ -1,3 +1,4 @@
+//C:\Users\yeswa\OneDrive\Desktop\OVS\Backend\config\db.js
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
