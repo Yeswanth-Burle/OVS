@@ -30,15 +30,19 @@ const Navbar = () => {
                                     Welcome, <span className="font-semibold text-gray-800">{user.name}</span>
                                 </span>
 
-                                {user.role === 'voter' && (
-                                    <Link to="/dashboard" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                                        Dashboard
+                                <Link to="/dashboard" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                    Dashboard
+                                </Link>
+
+                                {(user.role === 'admin' || user.role === 'main_admin') && (
+                                    <Link to="/admin?tab=elections" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                        Elections
                                     </Link>
                                 )}
 
-                                {(user.role === 'admin' || user.role === 'main_admin') && (
-                                    <Link to="/admin" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                                        Admin Panel
+                                {user.role === 'admin' && (
+                                    <Link to="/admin?tab=voters" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                        Voters
                                     </Link>
                                 )}
 

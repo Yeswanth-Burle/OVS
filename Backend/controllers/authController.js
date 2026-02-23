@@ -36,7 +36,7 @@ exports.register = async (req, res) => {
             name,
             email,
             password: hashedPassword,
-            role: role || 'voter', // Default to voter if not specified, but usually role selection is restricted
+            role: 'voter', // Force role to be voter for public registration
         });
 
         if (user) {
@@ -65,6 +65,10 @@ exports.login = async (req, res) => {
 
         // Check for user email
         const user = await User.findOne({ email }).select('+password');
+
+        if (user && user.status === 'blocked') {
+            return res.status(403).json({ message: 'Your account has been blocked. Please contact the administrator.' });
+        }
 
         if (user && (await bcrypt.compare(password, user.password))) {
             res.json({

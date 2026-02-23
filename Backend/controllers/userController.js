@@ -40,6 +40,56 @@ exports.updateUser = async (req, res) => {
     }
 };
 
+// @desc    Create a new admin
+// @route   POST /api/users/create-admin
+// @access  Main Admin
+exports.createAdmin = async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+
+        if (!name || !email || !password) {
+            return res.status(400).json({ message: 'Please add all fields' });
+        }
+
+        // Check if user exists
+        const userExists = await User.findOne({ email });
+
+        if (userExists) {
+            return res.status(400).json({ message: 'User already exists' });
+        }
+
+        // Hash password
+        // Note: In a real app, you might want to auto-generate a password and email it to the user
+        // For simplicity, we'll take it from the request or use a default if you prefer logic for that
+        const salt = require('bcryptjs').genSaltSync(10);
+        const hashedPassword = require('bcryptjs').hashSync(password, salt);
+
+        // Create admin user
+        const user = await User.create({
+            name,
+            email,
+            password: hashedPassword,
+            role: 'admin',
+            status: 'approved' // Auto-approve created admins
+        });
+
+        if (user) {
+            res.status(201).json({
+                _id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                status: user.status
+            });
+        } else {
+            res.status(400).json({ message: 'Invalid user data' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
 // @desc    Get system stats
 // @route   GET /api/users/stats
 // @access  Admin/Main Admin
